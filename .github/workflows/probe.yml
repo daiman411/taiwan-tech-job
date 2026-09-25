@@ -7,14 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          python3 - <<'PY'
-          import json, urllib.request
-          def search(q, n=80):
-              body = json.dumps({"bool":[{"fulltext":{"value":q}}],"page_num":1,"page_limit":n}).encode()
-              req = urllib.request.Request("https://data.gov.tw/api/front/dataset/list", body, {"Content-Type":"application/json"})
-              return json.load(urllib.request.urlopen(req, timeout=60))["payload"]["search_result"]
-          for q in ["職缺", "台灣就業通", "求才"]:
-              print("=====", q)
-              for d in search(q):
-                  print(d["nid"], "|", d["agency_name"], "|", d["title"], "|", d.get("updatefreq_desc"), "|", d.get("all_file_format_name"), "|", (d.get("all_url") or [""])[:2])
-          PY
+          for q in 職缺 台灣就業通 求才 徵才; do
+            echo "===== $q"
+            curl -sS -m 60 -X POST -H 'Content-Type: application/json' -d "{\"bool\":[{\"fulltext\":{\"value\":\"$q\"}}],\"page_num\":1,\"page_limit\":80}" https://data.gov.tw/api/front/dataset/list > r.json
+            python3 -c "
+          import json
+          for d in json.load(open('r.json'))['payload']['search_result']:
+              print(d['nid'], '|', d['agency_name'], '|', d['title'], '|', d.get('updatefreq_desc'), '|', d.get('all_file_format_name'), '|', (d.get('all_url') or [''])[:2])
+          "
+          done
