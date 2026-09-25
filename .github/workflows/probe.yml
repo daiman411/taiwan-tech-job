@@ -9,22 +9,25 @@ jobs:
       - run: |
           set +e
           UA="TaiwanTechJobBot/1.0 (+https://github.com/daiman411/taiwan-tech-job)"
-          curl -sS -m 30 -A "$UA" https://www.518.com.tw/robots.txt | head -40
-          echo ======
-          for u in "https://www.518.com.tw/job-index.html" "https://www.518.com.tw/job-index.html?ab=2032001" "https://www.518.com.tw/job-index-P-1.html?ab=2032001" "https://www.518.com.tw/job-index.html?i=1&am=1&ab=2032001,2032002"; do
-            echo "== $u"; curl -sS -m 30 -A "$UA" -o p.html -w "%{http_code} %{size_download}\n" "$u"
-            grep -oE 'href="[^"]*job-[A-Za-z0-9_]+\.html[^"]*"' p.html | sort -u | head -8
-            grep -oE '<title>[^<]*' p.html
-          done
-          echo ====== job page
-          J=$(grep -oE 'https://www\.518\.com\.tw/job-[A-Za-z0-9]+\.html' p.html | head -1); echo "$J"
-          curl -sS -m 30 -A "$UA" -o j.html -w "%{http_code}\n" "$J"
+          echo "== robots"; curl -sS -m 30 -A "$UA" https://www.518.com.tw/robots.txt
+          echo "== job page"
+          curl -sS -m 30 -A "$UA" -o j.html -w "%{http_code}\n" https://www.518.com.tw/job-G058mp.html
           python3 - <<'PY'
-          import re, html
+          import re
           t = open('j.html', encoding='utf-8', errors='replace').read()
-          for b in re.findall(r'<script[^>]+ld\+json[^>]*>(.*?)</script>', t, re.S): print('LDJSON', b[:1500])
+          for b in re.findall(r'<script[^>]+ld\+json[^>]*>(.*?)</script>', t, re.S):
+              if 'JobPosting' in b: print('JOBPOSTING', b[:4000])
           print(re.findall(r'<title>[^<]*', t))
           PY
-          echo ====== search params from form
-          grep -oE 'name="[a-z]{1,4}"' p.html | sort | uniq -c | head -30
-          grep -oE 'ab=[0-9,]+' p.html | sort | uniq -c | sort -rn | head -20
+          echo "== list page item structure"
+          curl -sS -m 30 -A "$UA" -o p.html "https://www.518.com.tw/job-index-P-1.html?ab=2032001"
+          python3 - <<'PY'
+          import re
+          t = open('p.html', encoding='utf-8', errors='replace').read()
+          i = t.find('job-G058mp.html'); print(re.sub(r'\s+', ' ', t[i-1500:i+2500]))
+          print('pages:', sorted(set(re.findall(r'job-index-P-(\d+)\.html', t)), key=int)[-5:])
+          for b in re.findall(r'<script[^>]+ld\+json[^>]*>(.*?)</script>', t, re.S):
+              if 'ItemList' in b or 'JobPosting' in b: print('LIST-LD', b[:1500])
+          PY
+          echo "== category codes"
+          curl -sS -m 30 -A "$UA" https://www.518.com.tw/job-index.html | grep -oE 'ab=20[0-9]{5}[^"]{0,5}"[^>]*>[^<]{1,30}' | sort -u | head -80
