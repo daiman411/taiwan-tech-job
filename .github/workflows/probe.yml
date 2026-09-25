@@ -8,31 +8,23 @@ jobs:
     steps:
       - run: |
           set +e
-          for u in https://apiservice.mol.gov.tw/OdService/download/A17000000J-030144-MKw https://apiservice.mol.gov.tw/OdService/download/A17000000J-030144-nkP \
-                   https://data.taipei/api/dataset/9cb8ebf1-8d21-4523-908c-af853867eea1/resource/cec51213-9585-4b4a-ae18-5c9309ddf453/download \
-                   https://data.taipei/api/dataset/9cb8ebf1-8d21-4523-908c-af853867eea1/resource/b0c24ef5-06dd-4027-9a1a-5c39c3381cbe/download; do
-            echo "=================== $u"
-            curl -sSL -m 120 -D h.txt -o f.bin "$u"; grep -iE '^(HTTP|content-type|content-disposition|last-modified)' h.txt
-            ls -la f.bin; file f.bin
-            python3 - <<'PY'
-          import json, io, csv
-          raw = open('f.bin','rb').read()
-          for enc in ('utf-8-sig','big5','cp950'):
-              try: txt = raw.decode(enc); break
-              except Exception: pass
-          print('enc', enc, 'chars', len(txt))
-          try:
-              d = json.loads(txt)
-              rows = d if isinstance(d, list) else next((v for v in d.values() if isinstance(v, list)), [d])
-              print('json rows', len(rows)); print(json.dumps(rows[:2], ensure_ascii=False)[:2500])
-              keys = rows[0].keys() if rows and isinstance(rows[0], dict) else []
-              print('keys', list(keys))
-          except Exception as e:
-              r = list(csv.reader(io.StringIO(txt)))
-              print('csv rows', len(r)); print(r[:3])
-              # count tech rows
-              import re
-              tech = [x for x in r[1:] if re.search(r'工程師|軟體|程式|資訊|韌體|資料|數據|網路|系統', ' '.join(x))]
-              print('tech-ish rows', len(tech)); print(tech[:3])
-          PY
+          UA="TaiwanTechJobBot/1.0 (+https://github.com/daiman411/taiwan-tech-job)"
+          curl -sS -m 30 -A "$UA" https://www.518.com.tw/robots.txt | head -40
+          echo ======
+          for u in "https://www.518.com.tw/job-index.html" "https://www.518.com.tw/job-index.html?ab=2032001" "https://www.518.com.tw/job-index-P-1.html?ab=2032001" "https://www.518.com.tw/job-index.html?i=1&am=1&ab=2032001,2032002"; do
+            echo "== $u"; curl -sS -m 30 -A "$UA" -o p.html -w "%{http_code} %{size_download}\n" "$u"
+            grep -oE 'href="[^"]*job-[A-Za-z0-9_]+\.html[^"]*"' p.html | sort -u | head -8
+            grep -oE '<title>[^<]*' p.html
           done
+          echo ====== job page
+          J=$(grep -oE 'https://www\.518\.com\.tw/job-[A-Za-z0-9]+\.html' p.html | head -1); echo "$J"
+          curl -sS -m 30 -A "$UA" -o j.html -w "%{http_code}\n" "$J"
+          python3 - <<'PY'
+          import re, html
+          t = open('j.html', encoding='utf-8', errors='replace').read()
+          for b in re.findall(r'<script[^>]+ld\+json[^>]*>(.*?)</script>', t, re.S): print('LDJSON', b[:1500])
+          print(re.findall(r'<title>[^<]*', t))
+          PY
+          echo ====== search params from form
+          grep -oE 'name="[a-z]{1,4}"' p.html | sort | uniq -c | head -30
+          grep -oE 'ab=[0-9,]+' p.html | sort | uniq -c | sort -rn | head -20
