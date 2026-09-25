@@ -1,0 +1,15 @@
+name: probe
+on:
+  push:
+    branches: [probe-sources]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          set +e
+          curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset?q=%E8%81%B7%E7%BC%BA" | head -c 3000; echo
+          echo ----
+          curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset?q=%E5%B0%B1%E6%A5%AD%E9%80%9A" | head -c 3000; echo
+          echo ----
+          for id in 42061 20860 30990; do echo "== $id"; curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset/$id" | head -c 1500; echo; done
