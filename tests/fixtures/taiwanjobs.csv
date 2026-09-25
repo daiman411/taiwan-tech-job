@@ -1,0 +1,3 @@
+﻿OCCU_DESC（職務名稱）,WK_TYPE（職務性質）,CJOB1_COUNT（職務大類別代碼）,CJOB_NAME1（職務大類別名稱）,CJOB2_COUNT（職務小類別代碼）,CJOB_NAME2（職務小類別名稱）,JOB_PERSON（雇用人數）,STOP_DATE（應徵截止日期）,JOB_DETAIL（工作內容）,CITYNAME（工作地點）,EXPERIENCE（工作經驗）,WKTIME（工作時間）,SALARYCD（核薪方式）,NT_L（薪資範圍下限）,NT_U（薪資範圍上限）,EDGRDESC（最低學歷要求）,URL_QUERY（職缺資料URL）,COMPNAME（公司名稱）,TRANDATE（職缺更新日期）
+家庭照顧服務員,全職,17,醫療／美容／保健,170113,照顧服務員,1,20261001,在社會福利機構負責照顧病患。,台北市南港區,無,,月薪,32000,35000,不拘,https://job.taiwanjobs.gov.tw/Internet/jobwanted/JobDetail.aspx?EMPLOYER_ID=1&HIRE_ID=14696745,許先生,20260924
+軟體工程師,全職,05,資訊／軟體／系統,050101,軟體設計工程師,2,20261031,使用 C# 與 .NET 開發 MES 系統，維護 MS SQL 資料庫。,新竹市東區,2年以上,日班,月薪,45000,70000,大學,https://job.taiwanjobs.gov.tw/Internet/jobwanted/JobDetail.aspx?EMPLOYER_ID=2&HIRE_ID=14700001,範例精密股份有限公司,20260923

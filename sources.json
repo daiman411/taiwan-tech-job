@@ -2,9 +2,10 @@
   "_comment": "enabled: 關閉任一來源改成 false；max_items: 每個來源每天最多抓幾筆。",
   "retention_days": 14,
   "sources": {
-    "104":       {"enabled": true, "max_items": 480},
-    "yourator":  {"enabled": true, "max_items": 150},
-    "cake":      {"enabled": true, "max_items": 150},
+    "taiwanjobs":{"enabled": true, "max_items": 1000},
+    "104":       {"enabled": false, "max_items": 480, "_note": "GitHub Actions 的 IP 會被 403 擋下；只有在台灣網路的 self-hosted runner 才可能有用"},
+    "yourator":  {"enabled": false, "max_items": 150, "_note": "同上，雲端 IP 被 403"},
+    "cake":      {"enabled": false, "max_items": 150, "_note": "同上，雲端 IP 被 403"},
     "remotive":  {"enabled": true, "max_items": 400},
     "remoteok":  {"enabled": true, "max_items": 300},
     "arbeitnow": {"enabled": true, "max_items": 300},

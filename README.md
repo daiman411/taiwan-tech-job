@@ -21,9 +21,10 @@ Supabase 免費版限制 500 MB 資料庫與每月流量上限。網站讀的是
 
 | 來源 | 區域 | 方式 |
 |---|---|---|
-| 104 人力銀行 | 台灣 | 網站搜尋頁使用的 JSON，並讀取職缺詳情（條件要求、擅長工具） |
-| Yourator | 台灣 | 列表頁 + 職缺頁內的 schema.org JobPosting |
-| Cake | 台灣 | 列表頁 + 職缺頁內的 schema.org JobPosting |
+| 台灣就業通 | 台灣 | 勞動部開放資料（data.gov.tw #44062），取最近更新約 1,000 筆中的科技職缺 |
+| 104 人力銀行 | 台灣 | **預設停用**：GitHub Actions 的雲端 IP 會被回 403 |
+| Yourator | 台灣 | **預設停用**：同上 |
+| Cake | 台灣 | **預設停用**：同上 |
 | Remotive | 國外遠端 | 官方公開 API |
 | RemoteOK | 國外遠端 | 官方公開 API |
 | Arbeitnow | 歐洲 | 官方公開 API |

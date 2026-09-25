@@ -62,3 +62,14 @@ def test_jsonld_board():
     assert j.title == "後端工程師 Backend Engineer" and j.company == "Foo 科技"
     assert j.salary == "TWD 60,000–90,000 / 月" and j.years_min == 2
     assert "Node.js" in j.skills and j.city == "台北市"
+
+
+def test_taiwanjobs_csv():
+    from scraper.sources.taiwan import TaiwanJobs
+    rows = TaiwanJobs.parse_csv((FIX / "taiwanjobs.csv").read_text(encoding="utf-8-sig"))
+    jobs = [j for j in (TaiwanJobs.parse_row(r) for r in rows) if j]
+    assert len(jobs) == 1  # the caregiver row is filtered out
+    j = finalize(jobs[0])
+    assert j.source_id == "14700001" and j.company == "範例精密股份有限公司"
+    assert j.salary == "月薪 45,000–70,000" and j.years_min == 2 and j.city == "新竹市"
+    assert {"C#", ".NET", "MS SQL"} <= set(j.skills) and j.posted_at == "2026-09-23"

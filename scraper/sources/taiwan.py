@@ -228,3 +228,72 @@ class Cake(_JsonLdBoard):
         for k in ["software engineer", "backend", "frontend", "data", "machine learning", "devops", "firmware", "工程師"]
     ]
     LINK_RE = re.compile(r'href="(/companies/[^/"]+/jobs/[^"?#/]+)"')
+
+
+class TaiwanJobs(Source):
+    """台灣就業通職缺清單 — Ministry of Labor open data (政府資料開放授權條款), data.gov.tw dataset 44062.
+
+    The CSV holds the most recently updated ~1,000 postings across all industries; we keep the tech ones.
+    """
+
+    name, label, region = "taiwanjobs", "台灣就業通", "tw"
+    URL = "https://apiservice.mol.gov.tw/OdService/download/A17000000J-030144-MKw"
+    TECH_CATEGORY_RE = re.compile(r"資訊|軟體|系統|研發|電子|電機|半導體|工程")
+
+    def fetch(self) -> Iterable[Job]:
+        resp = self.get(self.URL, timeout=120)
+        n = 0
+        for row in self.parse_csv(resp.content.decode("utf-8-sig", errors="replace")):
+            job = self.parse_row(row)
+            if job:
+                yield job
+                n += 1
+                if n >= self.max_items:
+                    return
+
+    @staticmethod
+    def parse_csv(text: str) -> list[dict]:
+        import csv
+        import io
+
+        reader = csv.reader(io.StringIO(text))
+        header = next(reader, [])
+        # headers look like "OCCU_DESC（職務名稱）"; keep the English key
+        keys = [re.split(r"[（(]", h, maxsplit=1)[0].strip() for h in header]
+        return [dict(zip(keys, r)) for r in reader if r]
+
+    @classmethod
+    def parse_row(cls, r: dict) -> Job | None:
+        title = r.get("OCCU_DESC", "").strip()
+        cats = f"{r.get('CJOB_NAME1', '')} {r.get('CJOB_NAME2', '')}"
+        detail = r.get("JOB_DETAIL", "")
+        if not title or not (cls.TECH_CATEGORY_RE.search(cats) and is_tech_job(title, [cats], detail)):
+            return None
+        url = r.get("URL_QUERY", "")
+        m = re.search(r"HIRE_ID=(\d+)", url)
+        lo, hi = (r.get("NT_L") or "").strip(), (r.get("NT_U") or "").strip()
+        unit = r.get("SALARYCD", "")
+        if lo.isdigit() and hi.isdigit():
+            salary = f"{unit} {int(lo):,}–{int(hi):,}"
+        elif lo.isdigit():
+            salary = f"{unit} {int(lo):,} 以上"
+        else:
+            salary = ""
+        exp = r.get("EXPERIENCE", "")
+        req = [f"工作經驗：{exp}" if exp else "", f"學歷要求：{r['EDGRDESC']}" if r.get("EDGRDESC") else "",
+               f"工作時間：{r['WKTIME']}" if r.get("WKTIME") else "", f"應徵截止：{to_iso_date(r.get('STOP_DATE'))}" if r.get("STOP_DATE") else ""]
+        desc = detail.strip() + ("\n\n【條件要求】\n" + "\n".join(x for x in req if x) if any(req) else "")
+        return Job(
+            source="taiwanjobs",
+            source_id=m.group(1) if m else url,
+            title=title,
+            company=r.get("COMPNAME", ""),
+            url=url,
+            description=desc,
+            location=r.get("CITYNAME", ""),
+            salary=salary.strip(),
+            posted_at=to_iso_date(r.get("TRANDATE")),
+            tags=[t for t in (r.get("CJOB_NAME2"), r.get("WK_TYPE")) if t],
+            years_min=0 if exp in ("無", "不拘", "") else parse_years(exp),
+            education=r.get("EDGRDESC", ""),
+        )
