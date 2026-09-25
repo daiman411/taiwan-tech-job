@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台灣科技職缺雷達</title>
+  <meta name="description" content="每日彙整台灣與國外科技職缺，依技能、地區、年資篩選，並依職缺自動調整履歷。">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">📡 台灣科技職缺雷達</div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="jobs" role="tab">職缺</button>
+      <button class="tab" data-view="saved" role="tab">收藏 <span id="savedCount" class="pill">0</span></button>
+      <button class="tab" data-view="profile" role="tab">我的資料</button>
+    </nav>
+    <div id="updatedAt" class="muted small"></div>
+  </header>
+
+  <!-- ============ 職缺 ============ -->
+  <main id="view-jobs" class="view">
+    <aside class="filters" id="filters">
+      <div class="filter-head">
+        <strong>篩選條件</strong>
+        <button id="resetFilters" class="link">清除全部</button>
+      </div>
+
+      <label class="field">
+        <span>關鍵字</span>
+        <input id="q" type="search" placeholder="職稱、公司、技能…">
+      </label>
+
+      <div class="field">
+        <span>我的年資</span>
+        <div class="row">
+          <input id="myYears" type="number" min="0" max="40" placeholder="例如 3" style="width:6em"> 年
+          <label class="check small"><input id="includeNoYears" type="checkbox" checked> 含未標示</label>
+        </div>
+        <small class="muted">只顯示年資要求 ≤ 你的年資</small>
+      </div>
+
+      <div class="field">
+        <span>刊登時間</span>
+        <select id="days">
+          <option value="0">不限</option><option value="1">24 小時內</option><option value="3">3 天內</option>
+          <option value="7">7 天內</option><option value="30">30 天內</option>
+        </select>
+      </div>
+
+      <label class="check"><input id="remoteOnly" type="checkbox"> 只看可遠端</label>
+      <label class="check"><input id="newOnly" type="checkbox"> 只看今天新增</label>
+
+      <details open><summary>地區</summary><div id="f-country" class="checks"></div></details>
+      <details id="cityBox"><summary>台灣縣市</summary><div id="f-city" class="checks"></div></details>
+      <details open><summary>職務類別</summary><div id="f-category" class="checks"></div></details>
+      <details><summary>資歷</summary><div id="f-seniority" class="checks"></div></details>
+      <details open>
+        <summary>技能</summary>
+        <div class="row small">
+          <label class="check"><input type="radio" name="skillMode" value="any" checked> 任一</label>
+          <label class="check"><input type="radio" name="skillMode" value="all"> 全部</label>
+          <button id="useMySkills" class="link">套用我的技能</button>
+        </div>
+        <input id="skillSearch" type="search" placeholder="搜尋技能…">
+        <div id="f-skills" class="chips"></div>
+      </details>
+      <details><summary>來源</summary><div id="f-source" class="checks"></div></details>
+
+      <div class="external">
+        <strong class="small">也到這些網站搜尋同樣關鍵字</strong>
+        <div id="externalLinks" class="small"></div>
+      </div>
+    </aside>
+
+    <section class="results">
+      <div class="results-bar">
+        <button id="toggleFilters" class="btn ghost mobile-only">篩選</button>
+        <span id="resultCount" class="muted"></span>
+        <label class="small">排序
+          <select id="sort">
+            <option value="new">最新刊登</option>
+            <option value="match">技能符合度</option>
+            <option value="yearsAsc">年資要求低→高</option>
+          </select>
+        </label>
+      </div>
+      <div id="activeChips" class="chips"></div>
+      <ul id="jobList" class="job-list"></ul>
+      <button id="more" class="btn ghost wide" hidden>顯示更多</button>
+      <p id="empty" class="muted center" hidden>沒有符合的職缺，試著放寬條件。</p>
+    </section>
+
+    <section id="detail" class="detail" hidden>
+      <button class="close" id="closeDetail" aria-label="關閉">✕</button>
+      <div id="detailBody"></div>
+    </section>
+  </main>
+
+  <!-- ============ 收藏 ============ -->
+  <main id="view-saved" class="view" hidden>
+    <section class="results full">
+      <h2>收藏的職缺</h2>
+      <ul id="savedList" class="job-list"></ul>
+      <p id="savedEmpty" class="muted">還沒有收藏，點職缺的 ☆ 即可加入。</p>
+    </section>
+  </main>
+
+  <!-- ============ 我的資料 ============ -->
+  <main id="view-profile" class="view" hidden>
+    <section class="profile">
+      <div class="profile-head">
+        <h2>我的資料</h2>
+        <p class="muted small">資料只存在你這台瀏覽器（localStorage），不會上傳到任何伺服器。產生履歷時只會挑選、排序、強調你填的內容，不會捏造經歷。</p>
+        <div class="row wrap">
+          <button id="exportProfile" class="btn ghost">匯出 JSON</button>
+          <label class="btn ghost">匯入 JSON<input id="importProfile" type="file" accept="application/json" hidden></label>
+          <button id="clearProfile" class="btn ghost danger">清除</button>
+          <span id="saveState" class="muted small"></span>
+        </div>
+      </div>
+
+      <form id="profileForm" autocomplete="on">
+        <fieldset>
+          <legend>基本資料</legend>
+          <div class="grid2">
+            <label class="field"><span>姓名</span><input name="name"></label>
+            <label class="field"><span>職稱 / 定位</span><input name="headline" placeholder="例：後端工程師"></label>
+            <label class="field"><span>Email</span><input name="email" type="email"></label>
+            <label class="field"><span>電話</span><input name="phone"></label>
+            <label class="field"><span>所在地</span><input name="location" placeholder="台北市"></label>
+            <label class="field"><span>總年資</span><input name="years" type="number" min="0" max="50"></label>
+          </div>
+          <label class="field"><span>個人網站 / GitHub / LinkedIn（一行一個）</span><textarea name="links" rows="2"></textarea></label>
+          <label class="field"><span>個人摘要（多寫幾句，系統會挑最貼近職缺的句子）</span><textarea name="summary" rows="4"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend>技能</legend>
+          <label class="field"><span>技能（逗號或換行分隔，k8s、reactjs 等別名會自動對應）</span><textarea name="skills" rows="3"></textarea></label>
+          <details>
+            <summary class="small">從舊履歷文字自動找出技能</summary>
+            <textarea id="pasteResume" rows="5" placeholder="把舊履歷全文貼在這裡"></textarea>
+            <button type="button" id="detectSkills" class="btn ghost">辨識並加入技能</button>
+            <span id="detectResult" class="small muted"></span>
+          </details>
+        </fieldset>
+
+        <fieldset>
+          <legend>工作經歷</legend>
+          <div id="experiences"></div>
+          <button type="button" class="btn ghost" data-add="experiences">＋ 新增工作經歷</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>專案</legend>
+          <div id="projects"></div>
+          <button type="button" class="btn ghost" data-add="projects">＋ 新增專案</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>學歷</legend>
+          <div id="education"></div>
+          <button type="button" class="btn ghost" data-add="education">＋ 新增學歷</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>其他</legend>
+          <label class="field"><span>證照（逗號分隔）</span><input name="certifications"></label>
+          <label class="field"><span>語言能力（逗號分隔）</span><input name="languages" placeholder="中文（母語）, 英文（TOEIC 850）"></label>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+
+  <!-- ============ 履歷 ============ -->
+  <div id="resumeModal" class="modal" hidden>
+    <div class="modal-card">
+      <div class="modal-bar">
+        <strong id="resumeTitle">優化履歷</strong>
+        <div class="row wrap">
+          <label class="small">語言
+            <select id="resumeLang"><option value="zh">中文</option><option value="en">English</option></select>
+          </label>
+          <label class="small">每段經歷最多
+            <select id="maxBullets"><option>3</option><option>4</option><option selected>5</option><option>6</option><option>8</option></select> 點
+          </label>
+          <button id="semanticBtn" class="btn ghost" title="在瀏覽器下載開源多語言嵌入模型，以語意相似度排序經歷，不用任何 API token">語意比對</button>
+          <button id="copyMd" class="btn ghost">複製 Markdown</button>
+          <button id="printResume" class="btn">下載 PDF</button>
+          <button id="closeResume" class="btn ghost">關閉</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="resumeInsights" class="insights"></div>
+        <div id="resumeOut" class="resume-wrap" contenteditable="true" spellcheck="false"></div>
+      </div>
+    </div>
+  </div>
+
+  <template id="tpl-experiences">
+    <div class="block">
+      <div class="grid2">
+        <label class="field"><span>職稱</span><input data-k="title"></label>
+        <label class="field"><span>公司</span><input data-k="company"></label>
+        <label class="field"><span>開始</span><input data-k="start" placeholder="2021/03"></label>
+        <label class="field"><span>結束（空白 = 至今）</span><input data-k="end"></label>
+      </div>
+      <label class="field"><span>工作內容與成果（一行一點，多寫幾點讓系統挑選）</span><textarea data-k="bullets" rows="5"></textarea></label>
+      <button type="button" class="link danger" data-remove>刪除</button>
+    </div>
+  </template>
+  <template id="tpl-projects">
+    <div class="block">
+      <div class="grid2">
+        <label class="field"><span>專案名稱</span><input data-k="name"></label>
+        <label class="field"><span>連結</span><input data-k="link"></label>
+      </div>
+      <label class="field"><span>說明</span><input data-k="description"></label>
+      <label class="field"><span>重點（一行一點）</span><textarea data-k="bullets" rows="3"></textarea></label>
+      <button type="button" class="link danger" data-remove>刪除</button>
+    </div>
+  </template>
+  <template id="tpl-education">
+    <div class="block">
+      <div class="grid2">
+        <label class="field"><span>學校</span><input data-k="school"></label>
+        <label class="field"><span>學位 / 科系</span><input data-k="degree"></label>
+        <label class="field"><span>開始</span><input data-k="start"></label>
+        <label class="field"><span>結束</span><input data-k="end"></label>
+      </div>
+      <button type="button" class="link danger" data-remove>刪除</button>
+    </div>
+  </template>
+
+  <footer class="footer muted small">
+    <span id="sourceStatus"></span>
+    <span>職缺資料來自各網站公開頁面與 API，版權屬原網站所有，詳情與應徵請以原始連結為準。</span>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+name: Update jobs & deploy site
+
+on:
+  schedule:
+    - cron: "0 22 * * *"   # 每天台灣時間 06:00
+  workflow_dispatch:
+    inputs:
+      crawl:
+        description: "重新抓取職缺（false = 只重新部署網頁）"
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements-dev.txt
+
+      - name: Unit tests
+        run: python -m pytest -q
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build job data
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PREVIOUS_DATA_URL: ${{ steps.pages.outputs.base_url }}/data/
+        run: |
+          rm -rf site && cp -r docs site && rm -rf site/data
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ inputs.crawl }}" = "false" ]; then
+            # 只改前端時不重抓，直接沿用目前線上的資料（第一次部署沒有舊資料時會自動改成抓取）
+            python -m scraper.main --out site/data --reuse
+          else
+            python -m scraper.main --out site/data
+          fi
+          python - <<'PY'
+          import json; m = json.load(open("site/data/meta.json"))
+          print(f"total jobs: {m['total']}")
+          for k, v in m["sources"].items():
+              print(f"  {k:10s} {v.get('count', 0):5d}  {'OK' if v.get('ok') else 'FAILED ' + v.get('error', '')}")
+          PY
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,14 @@
+{
+  "_comment": "enabled: 關閉任一來源改成 false；max_items: 每個來源每天最多抓幾筆。",
+  "retention_days": 14,
+  "sources": {
+    "104":       {"enabled": true, "max_items": 480},
+    "yourator":  {"enabled": true, "max_items": 150},
+    "cake":      {"enabled": true, "max_items": 150},
+    "remotive":  {"enabled": true, "max_items": 400},
+    "remoteok":  {"enabled": true, "max_items": 300},
+    "arbeitnow": {"enabled": true, "max_items": 300},
+    "himalayas": {"enabled": true, "max_items": 300},
+    "hn":        {"enabled": true, "max_items": 400}
+  }
+}

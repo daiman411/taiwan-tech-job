@@ -1,0 +1,55 @@
+{
+ "updated_at": "2026-09-25T05:35:15+00:00",
+ "total": 12,
+ "sources": {
+  "104": {
+   "label": "104 人力銀行",
+   "count": 5,
+   "ok": true,
+   "error": ""
+  },
+  "yourator": {
+   "label": "Yourator",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "cake": {
+   "label": "Cake",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "remotive": {
+   "label": "Remotive",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "remoteok": {
+   "label": "RemoteOK",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "himalayas": {
+   "label": "Himalayas",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "hn": {
+   "label": "HN Who's Hiring",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  },
+  "arbeitnow": {
+   "label": "Arbeitnow",
+   "count": 1,
+   "ok": true,
+   "error": ""
+  }
+ },
+ "shards": 64
+}

@@ -1,0 +1,483 @@
+{
+ "語言": {
+  "Python": [
+   "python"
+  ],
+  "Java": [
+   "java(?!\\s*script)"
+  ],
+  "JavaScript": [
+   "javascript",
+   "\\bjs\\b",
+   "es6"
+  ],
+  "TypeScript": [
+   "typescript",
+   "\\bts\\b"
+  ],
+  "C++": [
+   "c\\+\\+",
+   "\\bcpp\\b"
+  ],
+  "C#": [
+   "c#",
+   "c sharp"
+  ],
+  "Go": [
+   "golang",
+   "\\bgo\\s*(?:lang|語言|developer|engineer)"
+  ],
+  "Rust": [
+   "\\brust\\b"
+  ],
+  "Kotlin": [
+   "kotlin"
+  ],
+  "Swift": [
+   "\\bswift\\b"
+  ],
+  "Objective-C": [
+   "objective-?c"
+  ],
+  "PHP": [
+   "\\bphp\\b"
+  ],
+  "Ruby": [
+   "\\bruby\\b"
+  ],
+  "Scala": [
+   "\\bscala\\b"
+  ],
+  "R": [
+   "\\br\\s*(?:語言|language|programming)",
+   "\\brstudio\\b"
+  ],
+  "MATLAB": [
+   "matlab"
+  ],
+  "Dart": [
+   "\\bdart\\b"
+  ],
+  "Shell": [
+   "\\bbash\\b",
+   "shell script",
+   "\\bshell\\b"
+  ],
+  "SQL": [
+   "\\bsql\\b"
+  ],
+  "Verilog": [
+   "verilog",
+   "systemverilog"
+  ],
+  "VHDL": [
+   "\\bvhdl\\b"
+  ],
+  "Solidity": [
+   "solidity"
+  ],
+  "C": [
+   "(?<![\\w#+.])c\\s*(?:/|、|,|and)\\s*c\\+\\+",
+   "\\bc\\s*語言",
+   "\\bc language",
+   "\\bansi c\\b",
+   "\\bembedded c\\b"
+  ]
+ },
+ "前端": {
+  "React": [
+   "react(?:\\.?js)?(?!\\s*native)"
+  ],
+  "Vue": [
+   "\\bvue(?:\\.?js)?\\b",
+   "nuxt"
+  ],
+  "Angular": [
+   "angular"
+  ],
+  "Next.js": [
+   "next\\.?js"
+  ],
+  "Svelte": [
+   "svelte"
+  ],
+  "HTML/CSS": [
+   "\\bhtml5?\\b",
+   "\\bcss3?\\b",
+   "\\bscss\\b",
+   "\\bsass\\b"
+  ],
+  "Tailwind": [
+   "tailwind"
+  ],
+  "Redux": [
+   "\\bredux\\b"
+  ],
+  "Webpack": [
+   "webpack",
+   "\\bvite\\b"
+  ]
+ },
+ "後端": {
+  "Node.js": [
+   "node\\.?js",
+   "\\bnode\\b",
+   "express\\.?js",
+   "nestjs"
+  ],
+  "Django": [
+   "django"
+  ],
+  "Flask": [
+   "\\bflask\\b"
+  ],
+  "FastAPI": [
+   "fastapi"
+  ],
+  "Spring": [
+   "spring\\s*boot",
+   "\\bspring\\b"
+  ],
+  ".NET": [
+   "\\.net\\b",
+   "asp\\.net",
+   "dotnet"
+  ],
+  "Laravel": [
+   "laravel"
+  ],
+  "Rails": [
+   "ruby on rails",
+   "\\brails\\b"
+  ],
+  "GraphQL": [
+   "graphql"
+  ],
+  "REST API": [
+   "restful",
+   "rest\\s*api"
+  ],
+  "gRPC": [
+   "\\bgrpc\\b"
+  ],
+  "Microservices": [
+   "microservices?",
+   "微服務"
+  ]
+ },
+ "行動": {
+  "iOS": [
+   "\\bios\\b"
+  ],
+  "Android": [
+   "android"
+  ],
+  "Flutter": [
+   "flutter"
+  ],
+  "React Native": [
+   "react\\s*native"
+  ]
+ },
+ "資料庫": {
+  "PostgreSQL": [
+   "postgres(?:ql)?"
+  ],
+  "MySQL": [
+   "mysql",
+   "mariadb"
+  ],
+  "MS SQL": [
+   "ms\\s*sql",
+   "sql\\s*server"
+  ],
+  "Oracle DB": [
+   "\\boracle\\b"
+  ],
+  "MongoDB": [
+   "mongo(?:db)?"
+  ],
+  "Redis": [
+   "\\bredis\\b"
+  ],
+  "Elasticsearch": [
+   "elastic\\s*search",
+   "opensearch",
+   "\\belk\\b"
+  ],
+  "Cassandra": [
+   "cassandra"
+  ],
+  "BigQuery": [
+   "bigquery"
+  ],
+  "Snowflake": [
+   "snowflake"
+  ]
+ },
+ "雲端/DevOps": {
+  "AWS": [
+   "\\baws\\b",
+   "amazon web services",
+   "\\bec2\\b",
+   "\\bs3\\b",
+   "lambda"
+  ],
+  "GCP": [
+   "\\bgcp\\b",
+   "google cloud"
+  ],
+  "Azure": [
+   "\\bazure\\b"
+  ],
+  "Docker": [
+   "docker",
+   "container"
+  ],
+  "Kubernetes": [
+   "kubernetes",
+   "\\bk8s\\b",
+   "\\beks\\b",
+   "\\bgke\\b"
+  ],
+  "Terraform": [
+   "terraform"
+  ],
+  "Ansible": [
+   "ansible"
+  ],
+  "CI/CD": [
+   "ci\\s*/\\s*cd",
+   "jenkins",
+   "github actions",
+   "gitlab ci",
+   "circleci"
+  ],
+  "Linux": [
+   "linux",
+   "ubuntu",
+   "centos"
+  ],
+  "Git": [
+   "\\bgit\\b",
+   "github",
+   "gitlab"
+  ],
+  "Prometheus/Grafana": [
+   "prometheus",
+   "grafana"
+  ],
+  "Nginx": [
+   "nginx"
+  ]
+ },
+ "資料/AI": {
+  "Machine Learning": [
+   "machine learning",
+   "\\bml\\b",
+   "機器學習"
+  ],
+  "Deep Learning": [
+   "deep learning",
+   "深度學習",
+   "neural network",
+   "神經網路"
+  ],
+  "LLM": [
+   "\\bllms?\\b",
+   "large language model",
+   "大型語言模型",
+   "\\brag\\b",
+   "langchain",
+   "prompt engineering"
+  ],
+  "NLP": [
+   "\\bnlp\\b",
+   "natural language processing",
+   "自然語言"
+  ],
+  "Computer Vision": [
+   "computer vision",
+   "電腦視覺",
+   "影像辨識",
+   "影像處理",
+   "image processing"
+  ],
+  "PyTorch": [
+   "pytorch",
+   "\\btorch\\b"
+  ],
+  "TensorFlow": [
+   "tensorflow",
+   "\\bkeras\\b"
+  ],
+  "OpenCV": [
+   "opencv"
+  ],
+  "scikit-learn": [
+   "scikit-?learn",
+   "sklearn"
+  ],
+  "Pandas": [
+   "pandas",
+   "numpy"
+  ],
+  "Spark": [
+   "\\bspark\\b",
+   "pyspark"
+  ],
+  "Hadoop": [
+   "hadoop",
+   "\\bhive\\b"
+  ],
+  "Kafka": [
+   "kafka"
+  ],
+  "Airflow": [
+   "airflow"
+  ],
+  "Data Analysis": [
+   "data analy",
+   "資料分析",
+   "數據分析"
+  ],
+  "Tableau/Power BI": [
+   "tableau",
+   "power\\s*bi",
+   "looker"
+  ],
+  "MLOps": [
+   "mlops",
+   "mlflow",
+   "kubeflow"
+  ],
+  "CUDA": [
+   "\\bcuda\\b",
+   "tensorrt"
+  ]
+ },
+ "嵌入式/硬體": {
+  "Embedded": [
+   "embedded",
+   "嵌入式"
+  ],
+  "Firmware": [
+   "firmware",
+   "韌體"
+  ],
+  "RTOS": [
+   "\\brtos\\b",
+   "freertos",
+   "zephyr"
+  ],
+  "ARM": [
+   "\\barm\\b",
+   "cortex-?m"
+  ],
+  "MCU": [
+   "\\bmcu\\b",
+   "微控制器",
+   "stm32"
+  ],
+  "FPGA": [
+   "\\bfpga\\b"
+  ],
+  "ASIC": [
+   "\\basic\\b",
+   "ic design",
+   "ic 設計",
+   "晶片設計"
+  ],
+  "Linux Kernel": [
+   "linux kernel",
+   "device driver",
+   "驅動程式",
+   "\\bdriver\\b"
+  ],
+  "PCB": [
+   "\\bpcb\\b",
+   "layout",
+   "電路設計"
+  ],
+  "Semiconductor": [
+   "semiconductor",
+   "半導體",
+   "製程"
+  ],
+  "IoT": [
+   "\\biot\\b",
+   "物聯網"
+  ],
+  "Qt": [
+   "\\bqt\\b"
+  ]
+ },
+ "測試/資安": {
+  "Automation Testing": [
+   "selenium",
+   "cypress",
+   "playwright",
+   "自動化測試",
+   "test automation"
+  ],
+  "Unit Testing": [
+   "unit test",
+   "單元測試",
+   "pytest",
+   "jest",
+   "junit"
+  ],
+  "Security": [
+   "security",
+   "資安",
+   "資訊安全",
+   "penetration",
+   "滲透測試",
+   "\\bsoc\\b",
+   "owasp"
+  ]
+ },
+ "其他": {
+  "Agile/Scrum": [
+   "agile",
+   "scrum",
+   "敏捷"
+  ],
+  "System Design": [
+   "system design",
+   "系統設計",
+   "distributed system",
+   "分散式"
+  ],
+  "Blockchain": [
+   "blockchain",
+   "區塊鏈",
+   "web3",
+   "smart contract"
+  ],
+  "Unity": [
+   "\\bunity\\b"
+  ],
+  "Unreal": [
+   "unreal"
+  ],
+  "UI/UX": [
+   "\\bui\\s*/\\s*ux\\b",
+   "\\bux\\b",
+   "figma"
+  ],
+  "English": [
+   "english",
+   "英文",
+   "英語",
+   "toeic",
+   "多益"
+  ],
+  "Japanese": [
+   "japanese",
+   "日文",
+   "日語",
+   "jlpt"
+  ]
+ }
+}
