@@ -8,8 +8,11 @@ jobs:
     steps:
       - run: |
           set +e
-          curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset?q=%E8%81%B7%E7%BC%BA" | head -c 3000; echo
-          echo ----
-          curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset?q=%E5%B0%B1%E6%A5%AD%E9%80%9A" | head -c 3000; echo
-          echo ----
-          for id in 42061 20860 30990; do echo "== $id"; curl -sS -m 30 "https://data.gov.tw/api/v2/rest/dataset/$id" | head -c 1500; echo; done
+          for body in '{"q":"職缺"}' '{"query":"職缺"}' '{"keyword":"職缺"}' '{"bool":[{"fulltext":{"value":"職缺"}}],"page_num":1,"page_limit":10}'; do
+            echo "== POST $body"; curl -sS -m 30 -X POST -H 'Content-Type: application/json' -d "$body" "https://data.gov.tw/api/front/dataset/list" | head -c 2500; echo
+          done
+          echo "== taiwanjobs"
+          curl -sS -m 30 -o /dev/null -w "%{http_code}\n" "https://www.taiwanjobs.gov.tw/"
+          curl -sS -m 30 "https://www.taiwanjobs.gov.tw/Internet/Index/openData.aspx" | grep -oiE 'href="[^"]*(json|csv|xml|opendata|OpenData)[^"]*"' | head -40
+          echo "== 1111 / 518 status"
+          for u in https://www.1111.com.tw/search/job?ks=python https://www.518.com.tw/job-index.html https://www.104.com.tw/jobs/search/ ; do curl -sS -m 30 -o /dev/null -w "%{http_code} $u\n" -A "Mozilla/5.0" "$u"; done
