@@ -297,3 +297,26 @@ class TaiwanJobs(Source):
             years_min=0 if exp in ("無", "不拘", "") else parse_years(exp),
             education=r.get("EDGRDESC", ""),
         )
+
+
+class Job518(_JsonLdBoard):
+    """518熊班: robots.txt allows crawling and every job page carries JobPosting JSON-LD."""
+
+    name, label = "518", "518熊班"
+    delay = 1.5
+    BASE = "https://www.518.com.tw"
+    # ab=2032001 資訊軟體, 2032002 MIS/網管; keyword searches cover hardware / firmware / data roles
+    LIST_URLS = [f"https://www.518.com.tw/job-index-P-{p}.html?ab=2032001" for p in range(1, 9)] + [
+        f"https://www.518.com.tw/job-index-P-{p}.html?ab=2032002" for p in range(1, 4)
+    ] + [f"https://www.518.com.tw/job-index.html?ad={quote(k)}" for k in ["韌體工程師", "嵌入式", "硬體工程師", "資料工程師", "AI工程師", "半導體工程師"]]
+    LINK_RE = re.compile(r'href="(https://www\.518\.com\.tw/job-[A-Za-z0-9]{5,8}\.html)"')
+
+    @classmethod
+    def parse_page(cls, url: str, page_html: str) -> Job | None:
+        job = super().parse_page(url, page_html)
+        if job:
+            job.source_id = re.sub(r"^.*job-|\.html$", "", url)
+            if not job.salary:
+                m = re.search(r"薪資待遇\s*\n\s*([^\n]+)", job.description)
+                job.salary = m.group(1).strip()[:60] if m else ""
+        return job

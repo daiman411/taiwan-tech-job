@@ -3,6 +3,7 @@
   "retention_days": 14,
   "sources": {
     "taiwanjobs":{"enabled": true, "max_items": 1000},
+    "518":       {"enabled": true, "max_items": 350},
     "104":       {"enabled": false, "max_items": 480, "_note": "GitHub Actions 的 IP 會被 403 擋下；只有在台灣網路的 self-hosted runner 才可能有用"},
     "yourator":  {"enabled": false, "max_items": 150, "_note": "同上，雲端 IP 被 403"},
     "cake":      {"enabled": false, "max_items": 150, "_note": "同上，雲端 IP 被 403"},

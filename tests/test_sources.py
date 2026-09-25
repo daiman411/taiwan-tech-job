@@ -73,3 +73,13 @@ def test_taiwanjobs_csv():
     assert j.source_id == "14700001" and j.company == "範例精密股份有限公司"
     assert j.salary == "月薪 45,000–70,000" and j.years_min == 2 and j.city == "新竹市"
     assert {"C#", ".NET", "MS SQL"} <= set(j.skills) and j.posted_at == "2026-09-23"
+
+
+def test_518():
+    from scraper.sources.taiwan import Job518
+    html = (FIX / "518_job.html").read_text(encoding="utf-8")
+    j = finalize(Job518.parse_page("https://www.518.com.tw/job-G058mp.html", html))
+    assert j.source_id == "G058mp" and j.company == "揚秦國際企業股份有限公司"
+    assert j.city == "桃園市" and j.years_min == 2
+    assert j.salary.startswith("面議") and {".NET", "MS SQL", "JavaScript", "C#"} <= set(j.skills)
+    assert Job518.LINK_RE.findall('<a href="https://www.518.com.tw/job-G058mp.html">') == ["https://www.518.com.tw/job-G058mp.html"]
